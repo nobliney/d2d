@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="D2D: Detector-to-Differentiable Critic for Improved Numeracy in Text-to-Image Generation">
+  <meta name="keywords" content="text-to-image, numeracy">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>D2D: Detector-to-Differentiable Critic for Improved Numeracy in Text-to-Image Generation</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <!-- <link rel="icon" href="./static/images/favicon.svg"> -->
+  <!-- <link rel="icon" href="data:image/svg+xml,
+      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+        <text y='.9em' font-size='90'>🌄</text>
+      </svg>"> -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <script>
+    function copyBibtex(btn) {
+  const text = document.getElementById("bibtex").innerText;
+  navigator.clipboard.writeText(text);
+
+  // swap icons
+  btn.querySelector(".copy-icon").style.display = "none";
+  btn.querySelector(".check-icon").style.display = "block";
+
+  // switch back after 1.5s
+  setTimeout(() => {
+    btn.querySelector(".copy-icon").style.display = "block";
+    btn.querySelector(".check-icon").style.display = "none";
+  }, 1500);
+}
+    </script>
+</head>
+<body>
+
+<!-- <nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://visualai.princeton.edu/">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://visualai.princeton.edu/">
+            Princeton Visual AI Lab
+          </a>
+          <a class="navbar-item" href="https://visualai.princeton.edu/">
+            Princeton Visual AI Lab
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav> -->
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title"><span class="d2d">D2D</span>: Detector-to-Differentiable Critic for Improved Numeracy in Text-to-Image Generation</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <!-- <a href="https://nobliney.github.io">Nobline Yoo</a><sup>1</sup>,</span> -->
+               Nobline Yoo<sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.cs.princeton.edu/~olgarus/">Olga Russakovsky</a><sup>1</sup>,
+            </span>
+             <span class="author-block">
+              <a href="https://l-yezhu.github.io/">Ye Zhu</a><sup>1,2</sup>,
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Princeton University,</span>
+            <span class="author-block"><sup>2</sup>LIX, École Polytechnique, IP Paris</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+
+              <!-- PDF Link. -->
+              <!-- <span class="link-block">
+                <a href="https://arxiv.org/pdf/2011.12948"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span> -->
+
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2510.19278"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="youtube link"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/princetonvisualai/D2D"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code (repo under construction!)</span>
+                  </a>
+              </span>
+
+              <!-- Dataset Link. -->
+              <!-- <span class="link-block">
+                <a href="links to benchmarks"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Benchmarks</span>
+                  </a>
+              </span> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <!-- <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video> -->
+      <img src="./static/images/header.png" style="margin-left: -4%;">
+      <h2 class="subtitle has-text-centered">
+        <b>Qualitative examples illustrating the count-correction ability of our detector-based
+        critic on a variety of objects, counts 1-10.</b> <span class="d2d">D2D</span> proposes
+        a new and effective way to leverage detectors for this challenging task. Prompt template: “A realistic
+        photo of a scene with [count] [object class].”
+      </h2>
+    </div>
+  </div>
+</section>
+
+<!-- <section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/steve.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/chair-tp.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/shiba.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/fullbody.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/blueshirt.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-mask">
+          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/mask.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-coffee">
+          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/coffee.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/toby2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>Text-to-image (T2I) diffusion models have achieved strong performance in semantic alignment, 
+          yet they still struggle with generating the correct number of objects specified in prompts.</p> 
+
+          <p>Existing approaches typically incorporate auxiliary counting networks as external critics to 
+          enhance numeracy. However, since these critics must provide gradient guidance during generation, 
+          they are restricted to regression-based models that are inherently <em>differentiable</em>, thus 
+          excluding detector-based models with superior counting ability, whose count-via-enumeration nature 
+          is <em>non-differentiable</em>. To overcome this limitation, we propose <b>Detector-to-Differentiable 
+          (<span class="d2d">D2D</span>)</b>, a novel framework that transforms non-differentiable detection models into differentiable 
+          critics, thereby leveraging their superior counting ability to guide numeracy generation. Specifically, 
+          we design custom activation functions to convert detector logits into soft binary indicators, which are 
+          then used to optimize the noise prior at inference time with pre-trained T2I models.</p>
+
+          <p>Our extensive experiments on SDXL-Turbo, SD-Turbo, and Pixart-DMD across four benchmarks of 
+          varying complexity (low-density, high-density, and multi-object scenarios) demonstrate consistent 
+          and substantial improvements in object counting accuracy (e.g., boosting up to 13.7% on D2D-Small, 
+          a 400-prompt, low-density benchmark), with minimal degradation in overall image quality and 
+          computational overhead.</p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+<!-- Main body -->
+<section class="section">
+  <div class="container is-max-desktop">
+    
+    <!-- 1. THE PROBLEM -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">The Problem</h2>
+
+        <div class="content has-text-justified">
+          Since vanilla T2I models are not explicitly trained to count, existing methods introduce 
+          auxiliary counting critics to provide additional supervision during
+          generation via <em>gradient</em> guidance, <b>which restricts current approaches to differentiable, regression-based models</b>
+          such as RCC and CLIP-Count. This design inherently excludes high-accuracy detector-based models which count via bbox-enumeration.
+          <span class="red-highlight">Despite being non-differentiable, detectors (e.g., OWLv2, YOLOv9) often outperform regression-based counterparts in 
+          low-density object scenarios, where discrepancies between generated and requested counts are most noticeable.</span>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- 1.1 low density -->
+    <div class="columns is-centered">
+      <div class="column is-centered">
+        <div class="content">
+          <img src="./static/images/count_motiv1.jpg" width="97.3%">
+          <p class="has-text-centered" style="width: 97.3%;">
+            Low and high-density examples with the wrong number of generated objects.
+          </p>
+        </div>
+      </div>
+
+      <!-- 1.2 detector count better -->
+      <div class="column is-centered">
+          <div class="content">
+            <img src="./static/images/count_motiv2.png">
+            <p class="has-text-centered" style="margin-left: 10%;">
+              Error by ground truth count on TallyQA and FSC147 counting benchmarks.
+            </p>
+          </div>
+      </div>
+      </div>
+
+    <!-- 1.3 briefly mention our solution -->
+    <div class="columns is-centered" style="margin-top: 2%; margin-bottom: 5%; border: 2px solid black; padding: 10px;">
+      <div class="column is-full-width">
+         <h3 class="subtitle has-text-centered is-5">To resolve this bottleneck, we convert existing object detectors into 
+          differentiable critics, thereby allowing T2I diffusion models to benefit from stronger counting models for improved numeracy.
+        </h3>
+        
+      </div>
+    </div>
+
+
+    <!-- 2. THE METHOD -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Solution: The <span class="d2d">D2D</span> Method</h2>
+
+        <div class="content has-text-justified">
+          <b>D2D</b> builds on two key insights.
+          <b>(1)</b> We design a high-curvature activation function that converts bounding box logits outputted from
+          detectors into soft binary indicators, thereby making them gradient-friendly for count optimization.
+          <b>(2)</b> To leverage our “count-via-summation” gradient, unlike prior approaches that intervene at
+          intermediate states or denoised predictions along the sampling trajectory, we instead optimize the
+          initial noise using a test-time tunable module, the Latent Modifier Network. This backbone-agnostic
+          design enables broader generalization of our method across diverse diffusion-based T2I architectures,
+          including U-Net and DiT.
+        </div>
+
+        <img src="./static/images/pipeline.png">
+        <h2 class="subtitle has-text-centered is-6">
+        D2D consists of <b>two</b> main components that 🌟 <b>work together</b> 🌟 to improve numeracy: 
+        our <span class="orange-highlight">detector-based count critic</span> guides the <span class="blue-highlight">Latent Modifier
+        Network (LMN)</span> on how to transform the original initial noise into a more optimal one. Our count
+        critic uses sigmoid-based activation functions to convert logits into gradient signals, which are then
+        backpropagated through the frozen generator to update the weights of the LMN.
+        </h3>
+      </div>
+    </div>
+
+
+    <!-- MAIN TABLE -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Results</h2>
+
+        <div class="content has-text-justified">
+          On numeracy, <b>D2D</b> consistently outperforms baselines across low-density, single-object, multi-object, and
+          high-density prompts, across base models with U-Net and DiT backbonesting up to 13.7% points (from 30% with
+          Make It Count to 43.7% with <b>D2D</b> on D2D-Small). <b>D2D</b> generalizes across different detector backbones.  
+          
+        </div>
+
+        <div class="content has-text-centered" style="margin-bottom: 0%;">
+          <img src="./static/images/tab1.png" width="70%">
+        </div>
+
+        <div class="has-text-centered" style="width: 70%; margin-left: auto; margin-right: auto;">
+          <h2 class="subtitle has-text-justified is-6">
+          <b>Quantitative results.</b> <b>D2D</b> outperforms all baselines across all four benchmarks (CoCoCount and D2D-Small/Multi/Large), even generalizing across detector
+          variants OWLv2 and YOLOv9. <b>D2D</b> with YOLOv9 on
+          base model SDXL-Turbo is in <b><em>bold italics</em></b>, because while it outperforms all baselines, it is second
+          to using OWLv2. The higher-performing OWLv2 detector is used in all subsequent experiments
+          on SD-Turbo and Pixart-DMD. Standard deviations indicate the significance of our findings. Base
+          models with no post-enhancement highlighted in <span style="background-color: #E3E3E3; border-radius: 0.4em; padding: 0em 0.4em 0.15em 0.4em;">gray</span>. Avg. over four seeds.
+          </h2>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- FIXING GEN -->
+     <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">D2D in action!</h2>
+
+        <div class="content has-text-justified">
+          <b>D2D</b> effectively correct both over and under-generation (i.e. when the initial generation contains more/fewer than requested objects). 
+          We compare <b>D2D</b>'s correction rate on base model SDXL-Turbo. <b>D2D</b> has the highest correction rate, 
+          correcting 40.13% of over-generations and 41.83% of
+          under-generations, which is at least 16% points over baselines, while maintaining 72.57% of
+          already-correct generations (also more than baselines).
+        </div>
+
+        <div class="content has-text-centered" style="margin-bottom: 0%;">
+          <img src="./static/images/over_under.png" width="70%">
+        </div>
+        <div class="has-text-centered" style="width: 70%; margin-left: auto; margin-right: auto; margin-top: 1%;">
+          <h2 class="subtitle has-text-centered is-6">
+          <b>D2D</b> effectively corrects over and
+          under-generation.
+          </h2>
+        </div>
+
+        <div class="content has-text-centered" style="margin-bottom: 0%; margin-top: 5%;">
+          <img src="./static/images/tab2.png" width="70%">
+        </div>
+        <div class="has-text-centered" style="width: 70%; margin-left: auto; margin-right: auto; margin-top:1%;">
+          <h2 class="subtitle has-text-justified is-6">
+          Given the same initial conditions, <b>D2D</b>
+          is effective at correcting both over and undergeneration. 
+        </h2>
+
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- INFERENCE COST -->
+     <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Inference cost analysis</h2>
+
+        <div class="content has-text-centered" style="margin-bottom: 0%; margin-left: -7%;">
+          <img src="./static/images/infcost.png" width="70%">
+        </div>
+        <div class="has-text-centered" style="width: 70%; margin-left: auto; margin-right: auto; margin-top: 1%;">
+          <h2 class="subtitle has-text-justified is-6">
+          <b>Numeracy vs. inference cost by method.</b> <b>D2D</b> scores in the top
+          left (i.e. it is both high-numeracy and low-cost).
+          Base model/detector noted in <span style="color: #676667;">gray</span>.
+          </h2>
+        </div>
+        
+      </div>
+    </div>
+
+
+    <!-- ADDITIONAL QUAL RESULTS -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Additional qualitative results</h2>
+
+        <div class="content has-text-justified">
+          <b>D2D</b> effectively corrects numeracy mistakes.
+        </div>
+
+        <div class="content has-text-centered" style="margin-bottom: 0%; margin-left: -10%;">
+          <img src="./static/images/app_sdxl.png" width="70%">
+        </div>
+        <div class="has-text-centered" style="width: 70%; margin-left: auto; margin-right: auto; margin-top: 1%;">
+          <h2 class="subtitle has-text-centered is-6">
+          <b>Qualitative examples</b> from
+          count correction/alignment methods D2D, ReNO, and TokenOpt on base model SDXL-Turbo, and 
+          Make It Count on base SDXL.
+          </h2>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+
+    <div class="bib-container">
+      <button class="copy-btn" onclick="copyBibtex(this)" title="Copy BibTeX">
+        <!-- Copy icon: back square outline + front square filled -->
+        <svg class="copy-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Back square (outline, top-right) -->
+          <rect x="9" y="3" width="12" height="12" rx="2" ry="2" fill="none"/>
+          <!-- Front square (filled, bottom-left) -->
+          <rect x="3" y="7" width="12" height="12" rx="2" ry="2" fill="#E2E4E8" stroke="currentColor"/>
+        </svg>
+
+        <!-- Check icon (hidden by default) -->
+        <svg class="check-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+          <polyline points="20 6 9 17 4 12" fill="none"></polyline>
+        </svg>
+      </button>
+      <pre><code id="bibtex">@article{yoo2025d2d,
+  author    = {Yoo, Nobline and Russakovsky, Olga and Zhu, Ye},
+  title     = {D2D: Detector-to-Differentiable Critic for Improved Numeracy in Text-to-Image Generation},
+  journal   = {arXiv preprint arXiv:2510.19278},
+  year      = {2025}
+}</code></pre>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            Website template adapted from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
